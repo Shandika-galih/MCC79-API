@@ -19,5 +19,7 @@ public class Account : BaseEntity
     [Column("is_used")]
     public Boolean IsUsed { get; set; }
 
+    //Cardinality
     public ICollection<AccountRole> AccountRoles { get; set; }
+    public Employee Employee { get; set; }
 }
