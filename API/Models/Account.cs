@@ -20,6 +20,6 @@ public class Account : BaseEntity
     public Boolean IsUsed { get; set; }
 
     //Cardinality
-    public ICollection<AccountRole> AccountRoles { get; set; }
-    public Employee Employee { get; set; }
+    public ICollection<AccountRole>? AccountRoles { get; set; }
+    public Employee? Employee { get; set; }
 }
