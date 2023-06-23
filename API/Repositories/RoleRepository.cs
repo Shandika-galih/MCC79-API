@@ -1,9 +1,10 @@
-﻿using API.Data;
+﻿using API.Contracts;
+using API.Data;
 using API.Models;
 
 namespace API.Repositories;
 
-public class RoleRepository
+public class RoleRepository : IRoleRepository
 {
     private readonly BookingDbContext _context;
 
