@@ -64,7 +64,7 @@ public class AccountRoleService
         var createdAccountRole = _accountRoleRepository.Create(accountRole);
         if (createdAccountRole is null)
         {
-            return null; // Account Role not created
+            return null; 
         }
 
         var toDto = new GetAccountRoleDto
@@ -74,7 +74,7 @@ public class AccountRoleService
             RoleGuid = createdAccountRole.RoleGuid,
         };
 
-        return toDto; // Account Role created
+        return toDto; 
     }
 
     public int UpdateAccountRole(UpdateAccountRoleDto updateAccountRole)

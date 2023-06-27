@@ -24,7 +24,7 @@ public class AccountController : ControllerBase
     {
         var entities = _service.GetAccount();
 
-        if (entities == null)
+        if (entities is null)
         {
             return NotFound(new ResponseHandler<GetAccountDto>
             {

@@ -58,7 +58,7 @@ public class AccountService
     {
         var account = new Account
         {
-            Guid = new Guid(),
+            Guid = newAccountDto.Guid,
             Password = newAccountDto.Password,
             Otp = newAccountDto.Otp,
             IsDeleted = newAccountDto.IsDeleted,
