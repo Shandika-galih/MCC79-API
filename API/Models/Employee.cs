@@ -7,6 +7,7 @@ namespace API.Models;
 [Table("tb_m_employees")]
 public class Employee : BaseEntity
 {
+    internal readonly DateTime BirthDate;
 
     [Column("nik", TypeName = "nchar(8)")]
     public string Nik { get; set; }

@@ -72,8 +72,8 @@ public class EmployeeService
             Gender = newEmployeeDto.Gender,
             HiringDate = newEmployeeDto.HiringDate,
             Email = newEmployeeDto.Email,
-            Birtdate = newEmployeeDto.Birtdate,
-            Nik = newEmployeeDto.Nik,
+            Birtdate = newEmployeeDto.Birthdate,
+            Nik = GenerateNik(),
             CreatedDate = DateTime.Now,
             ModifiedDate = DateTime.Now
         };
@@ -87,11 +87,11 @@ public class EmployeeService
         var toDto = new GetEmployeeDto
         {
             Guid = employee.Guid,
-            Nik = employee.Nik,
+            Nik = GenerateNik(),
             Birtdate = employee.Birtdate,
             Email = employee.Email,
             FirstName = employee.FirstName,
-            LastName = employee.LastName,
+            LastName = employee.LastName, 
             Gender = employee.Gender,
             HiringDate = employee.HiringDate,
             PhoneNumber = employee.PhoneNumber
@@ -119,7 +119,7 @@ public class EmployeeService
             Gender = updateEmployeeDto.Gender,
             HiringDate = updateEmployeeDto.HiringDate,
             Email = updateEmployeeDto.Email,
-            Birtdate = updateEmployeeDto.Birtdate,
+            Birtdate = updateEmployeeDto.Birthdate,
             Nik = updateEmployeeDto.Nik,
             ModifiedDate = DateTime.Now,
             CreatedDate = getEmployee!.CreatedDate
@@ -151,4 +151,13 @@ public class EmployeeService
 
         return 1;
     }
+    public string GenerateNik()
+    {
+        var getLastNik = _employeeRepository.GetAll().Select(Employee => Employee.Nik).LastOrDefault();
+        if (getLastNik is null) return "111111";// first employee
+
+        var lastNik = Convert.ToInt32(getLastNik) + 1;
+        return lastNik.ToString();
+    }
+    
 }

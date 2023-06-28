@@ -1,4 +1,7 @@
 ﻿using API.Contracts;
+using API.DTOs.Account;
+using API.DTOs.Education;
+using API.DTOs.Employee;
 using API.DTOs.Universities;
 using API.Models;
 using API.Services;
@@ -150,4 +153,41 @@ public class AccountController : ControllerBase
             Message = "Successfully deleted"
         });
     }
+
+    /*[HttpPost("register")]
+    public IActionResult Register(RegisterAccount registerAccount)
+    {
+        var response = _service.Register(registerAccount);
+
+        if (response.Code == StatusCodes.Status200OK)
+        {
+            return Ok(response);
+        }
+
+        return BadRequest(response);
+    }*/
+    [Route("register")]
+    [HttpPost]
+    public IActionResult Register(RegisterAccount register)
+    {
+        var createdRegister = _service.Register(register);
+        if (createdRegister == null)
+        {
+            return BadRequest(new ResponseHandler<RegisterAccount>
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Register failed"
+            });
+        }
+
+        return Ok(new ResponseHandler<RegisterAccount>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully register",
+            Data = createdRegister
+        });
+    }
+
 }

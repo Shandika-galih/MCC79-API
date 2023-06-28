@@ -104,11 +104,12 @@ public class UniversityController : ControllerBase
         }
         if (update is 0)
         {
-            return BadRequest(new ResponseHandler<UpdateUniversityDto>
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<UpdateUniversityDto>
+            
             {
                 Code = StatusCodes.Status500InternalServerError,
                 Status = HttpStatusCode.InternalServerError.ToString(),
-                Message = "Check your data"
+                Message = "Error retrieving data from the database"
             });
         }
         return Ok(new ResponseHandler<UpdateUniversityDto>
@@ -135,7 +136,7 @@ public class UniversityController : ControllerBase
         }
         if (delete is 0)
         {
-            return BadRequest(new ResponseHandler<GetUniversityDto>
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<GetUniversityDto>
             {
                 Code = StatusCodes.Status500InternalServerError,
                 Status = HttpStatusCode.InternalServerError.ToString(),
