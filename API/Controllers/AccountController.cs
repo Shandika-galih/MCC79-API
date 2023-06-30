@@ -153,21 +153,8 @@ public class AccountController : ControllerBase
             Message = "Successfully deleted"
         });
     }
-
-    /*[HttpPost("register")]
-    public IActionResult Register(RegisterAccount registerAccount)
-    {
-        var response = _service.Register(registerAccount);
-
-        if (response.Code == StatusCodes.Status200OK)
-        {
-            return Ok(response);
-        }
-
-        return BadRequest(response);
-    }*/
-    [Route("register")]
-    [HttpPost]
+    //[Route("register")]
+    [HttpPost("register")]
     public IActionResult Register(RegisterAccount register)
     {
         var createdRegister = _service.Register(register);
@@ -187,6 +174,46 @@ public class AccountController : ControllerBase
             Status = HttpStatusCode.OK.ToString(),
             Message = "Successfully register",
             Data = createdRegister
+        });
+    }
+
+    [HttpPost("login")]
+    public IActionResult LoginRequest(LoginDto loginDto)
+    {
+        var login = _service.Login(loginDto);
+        if (login is "-1")
+        {
+            return NotFound(new ResponseHandler<LoginDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Email not found"
+            });
+        }
+        if (login is "0")
+        {
+            return BadRequest(new ResponseHandler<LoginDto>
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Data not created"
+            });
+        }
+        if (login is "-2")
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<LoginDto>
+            {
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Otp does not match"
+            });
+        }
+        return Ok(new ResponseHandler<string>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully Login",
+            Data = login
         });
     }
 

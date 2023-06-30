@@ -7,6 +7,7 @@ using API.Models;
 using API.Repositories;
 using API.Utilities.Enums;
 using System.Net;
+using System.Security.Claims;
 
 namespace API.Services;
 
@@ -16,16 +17,19 @@ public class AccountService
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IUniversityRepository _universityRepository;
     private readonly IEducationRepository _educationRepository;
+    private readonly ITokenHandler _tokenHandler;
 
     public AccountService(IAccountRepository accountRepository,
              IEmployeeRepository employeeRepository,
              IUniversityRepository universityRepository,
-             IEducationRepository educationRepository)
+             IEducationRepository educationRepository,
+             ITokenHandler tokenHandler)
     {
         _accountRepository = accountRepository;
         _employeeRepository = employeeRepository;
         _universityRepository = universityRepository;
         _educationRepository = educationRepository;
+        _tokenHandler = tokenHandler;
     }
 
     public IEnumerable<GetAccountDto>? GetAccount()
@@ -237,4 +241,37 @@ public class AccountService
 
         return toDto;
     }
+    public string Login(LoginDto loginDto)
+    {
+        var EmailEmployee = _employeeRepository.GetEmailLogin(loginDto.Email);
+        if (EmailEmployee == null)
+        {
+            return "0";
+        }
+
+        var password = _accountRepository.GetByGuid(EmailEmployee.Guid);
+        var isValid = Hashing.ValidatePassword(loginDto.Password, password!.Password);
+        if (!isValid)
+        {
+            return "-1";
+        }
+        /* var roleEmployee = ;
+         var role = _roleRepository.GetByGuid;*/
+        var claims = new List<Claim>() {
+            new Claim("NIK", EmailEmployee.Nik),
+            new Claim("FullName", $"{EmailEmployee.FirstName} {EmailEmployee.LastName}"),
+            new Claim("Email", loginDto.Email)
+        };
+
+        try
+        {
+            var getToken = _tokenHandler.GenerateToken(claims);
+            return getToken;
+        }
+        catch
+        {
+            return "-2";
+        }
+    }
+
 }

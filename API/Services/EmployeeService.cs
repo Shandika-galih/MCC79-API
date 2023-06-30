@@ -1,6 +1,8 @@
 ﻿using API.Contracts;
 using API.DTOs.Employee;
 using API.Models;
+using API.Repositories;
+using API.Utilities.Enums;
 
 namespace API.Services;
 
@@ -159,5 +161,59 @@ public class EmployeeService
         var lastNik = Convert.ToInt32(getLastNik) + 1;
         return lastNik.ToString();
     }
-    
+
+    /*public IEnumerable<GetAllMasterDto>? GetMaster()
+    {
+
+        var master = (from e in _employeeRepository.GetAll()
+                      join education in _educationRepository.GetAll() on e.Guid equals education.Guid
+                      join u in _universityRepository.GetAll() on education.UniversityGuid equals u.Guid
+                      select new
+                      {
+                          Guid = e.Guid,
+                          FullName = e.FirstName + e.LastName,
+                          Nik = e.Nik,
+                          BirthDate = e.BirthDate,
+                          Email = e.Email,
+                          Gender = e.Gender,
+                          HiringDate = e.HiringDate,
+                          PhoneNumber = e.PhoneNumber,
+                          Major = education.Major,
+                          Degree = education.Degree,
+                          Gpa = education.Gpa,
+                          UniversityName = u.Name
+                      }).ToList();
+
+        if (!master.Any())
+        {
+            return null;
+        }
+        var toDto = master.Select(master => new GetAllMasterDto
+        {
+            Guid = master.Guid,
+            FullName = master.FullName,
+            Nik = master.Nik,
+            BirthDate = master.BirthDate,
+            Email = master.Email,
+            Gender = master.Gender,
+            HiringDate = master.HiringDate,
+            PhoneNumber = master.PhoneNumber,
+            Major = master.Major,
+            Degree = master.Degree,
+            Gpa = master.Gpa,
+            UniversityName = master.UniversityName
+
+        });
+
+        return toDto;
+    }
+    public GetAllMasterDto? GetMasterByGuid(Guid guid)
+    {
+
+        var master = GetMaster();
+
+        var masterByGuid = master.FirstOrDefault(master => master.Guid == guid);
+
+        return masterByGuid;
+    }*/
 }
