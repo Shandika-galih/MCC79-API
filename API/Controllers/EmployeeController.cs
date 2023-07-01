@@ -152,51 +152,5 @@ public class EmployeeController : ControllerBase
         });
     }
 
-    /*[HttpGet("getall-master")]
-    public IActionResult GetMaster()
-    {
-        var entities = _service.GetMaster();
-
-        if (entities == null)
-        {
-            return NotFound(new ResponseHandler<GetAllMasterDto>
-            {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Data not found"
-            });
-        }
-
-        return Ok(new ResponseHandler<IEnumerable<GetAllMasterDto>>
-        {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Data found",
-            Data = entities
-        });
-    }
- 
-
-    [HttpGet("get-master/{guid}")]
-    public IActionResult GetMasterByGuid(Guid guid)
-    {
-        var employee = _service.GetMasterByGuid(guid);
-        if (employee is null)
-        {
-            return NotFound(new ResponseHandler<GetAllMasterDto>
-            {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Data not found"
-            });
-        }
-
-        return Ok(new ResponseHandler<GetAllMasterDto>
-        {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Data found",
-            Data = employee
-        });
-    }*/
+    
 }

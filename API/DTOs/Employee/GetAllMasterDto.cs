@@ -16,4 +16,5 @@ public class GetAllMasterDto
     public string Degree { get; set; }
     public double Gpa { get; set; }
     public string UniversityName { get; set; }
+    public string Role { get; set; }
 }

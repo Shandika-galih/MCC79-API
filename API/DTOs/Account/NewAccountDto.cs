@@ -12,4 +12,5 @@ public class NewAccountDto
     public int Otp { get; set; }
     public Boolean IsDeleted { get; set; }
     public Boolean IsUsed { get; set; }
+
 }

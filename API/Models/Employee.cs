@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using API.Utilities.Enums;
+using API.DTOs.Employee;
 
 namespace API.Models;
 

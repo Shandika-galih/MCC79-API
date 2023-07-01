@@ -7,4 +7,9 @@ namespace API.Repositories;
 public class RoleRepository : GeneralRepository<Role>, IRoleRepository
 {
     public RoleRepository(BookingDbContext context) : base(context) { }
+
+    public Role GetByName(string roleName)
+    {
+        return _context.Roles.FirstOrDefault(r => r.Name == roleName);
+    }
 }
