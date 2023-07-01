@@ -2,16 +2,21 @@
 using API.DTOs.AccountRole;
 using API.DTOs.Booking;
 using API.Models;
+using API.Repositories;
 
 namespace API.Services;
 
 public class BookingService
 {
     private readonly IBookingRepository _bookingRepository;
+    private readonly IEmployeeRepository _employeeRepository;
+    private readonly IRoomRepository _roomRepository;
 
-    public BookingService(IBookingRepository bookingRepository)
+    public BookingService(IBookingRepository bookingRepository, IEmployeeRepository employeeRepository, IRoomRepository roomRepository)
     {
         _bookingRepository = bookingRepository;
+        _employeeRepository = employeeRepository;
+        _roomRepository = roomRepository;
     }
 
     public IEnumerable<GetBookingDto>? GetBooking()
@@ -143,4 +148,58 @@ public class BookingService
 
         return 1;
     }
+    public IEnumerable<GetRoomTodayDto> GetRoomToday()
+    {
+        var room = (from r in _roomRepository.GetAll()
+                    join b in _bookingRepository.GetAll() on r.Guid equals b.RoomGuid
+                    join e in _employeeRepository.GetAll() on b.EmployeeGuid equals e.Guid
+                    where b.StartDate <= DateTime.Now && b.EndDate >= DateTime.Now
+                    select new GetRoomTodayDto
+                    {
+                        BookingGuid = b.Guid,
+                        RoomName = r.Name,
+                        Status = b.Status,
+                        Floor = r.Floor,
+                        BookedBy = e.FirstName + e.LastName
+                    }).ToList();
+
+        if (!room.Any())
+        {
+            return null;
+        }
+        var toDto = room.Select(r => new GetRoomTodayDto
+        {
+            BookingGuid = r.BookingGuid,
+            RoomName = r.RoomName,
+            Status = r.Status,
+            Floor = r.Floor,
+            BookedBy = r.BookedBy
+        });
+        return toDto;
+    }
+
+    public List<BookingDetailDto>? GetBookingDetails()
+    {
+        var bookings = _bookingRepository.GetBookingDetails();
+        var bookingDetails = bookings.Select(b => new BookingDetailDto
+        {
+            Guid = b.Guid,
+            BookedNIK = b.BookedNIK,
+            BookedBy = b.BookedBy,
+            RoomName = b.RoomName,
+            StartDate = b.StartDate,
+            EndDate = b.EndDate,
+            Status = b.Status,
+            Remarks = b.Remarks
+        }).ToList();
+
+        return bookingDetails;
+    }
+
+    public BookingDetailDto? GetBookingDetailByGuid(Guid guid)
+    {
+        var relatedBooking = GetBookingDetails().FirstOrDefault(b => b.Guid == guid);
+        return relatedBooking;
+    }
+
 }
