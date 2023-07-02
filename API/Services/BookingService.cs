@@ -202,4 +202,55 @@ public class BookingService
         return relatedBooking;
     }
 
+    public IEnumerable<GetBookingDurationDto> BookingDuration()
+    {
+        var bookings = _bookingRepository.GetAll();
+        var rooms = _roomRepository.GetAll();
+
+        var entities = (from booking in bookings
+                        join room in rooms on booking.RoomGuid equals room.Guid
+                        select new
+                        {
+                            guid = room.Guid,
+                            startDate = booking.StartDate,
+                            endDate = booking.EndDate,
+                            roomName = room.Name
+                        }).ToList();
+
+        var listBookingDurations = new List<GetBookingDurationDto>();
+
+        foreach (var entity in entities)
+        {
+            TimeSpan duration = entity.endDate - entity.startDate;
+
+            // Count the number of weekends within the duration
+            int totalDays = (int)duration.TotalDays;
+            int weekends = 0;
+
+            for (int i = 0; i <= totalDays; i++)
+            {
+                var currentDate = entity.startDate.AddDays(i);
+                if (currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    weekends++;
+                }
+            }
+
+            // Calculate the duration without weekends
+            TimeSpan bookingLength = duration - TimeSpan.FromDays(weekends);
+
+            var bookingDurationDto = new GetBookingDurationDto
+            {
+                RoomGuid = entity.guid,
+                RoomName = entity.roomName,
+                BookingLength = $"{bookingLength.Days} Hari"
+            };
+
+            listBookingDurations.Add(bookingDurationDto);
+        }
+
+        return listBookingDurations;
+    }
+
+
 }

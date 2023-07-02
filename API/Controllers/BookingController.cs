@@ -221,4 +221,28 @@ public class BookingController : ControllerBase
 
     }
 
+    [HttpGet("GetBookingDuration")]
+    public IActionResult GetBookingDuration()
+    {
+        var entities = _service.BookingDuration();
+
+        if (entities == null || !entities.Any())
+        {
+            return NotFound(new ResponseHandler<GetBookingDurationDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data not found"
+            });
+        }
+
+        return Ok(new ResponseHandler<IEnumerable<GetBookingDurationDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data Found",
+            Data = entities
+        });
+    }
+
 }

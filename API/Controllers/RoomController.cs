@@ -3,7 +3,9 @@ using API.DTOs.Room;
 using API.Models;
 using API.Services;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Net;
 
 namespace API.Controllers;
@@ -147,6 +149,57 @@ public class RoomController : ControllerBase
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
             Message = "Successfully deleted"
+        });
+    }
+    [HttpGet("unused")]
+    /*[Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]*/
+    public IActionResult GetUnusedRooms()
+    {
+        var unusedRooms = _service.GetUnusedRoom();
+
+        if (unusedRooms.Count() == 0)
+        {
+            return Ok(new ResponseHandler<IEnumerable<UnusedRoomDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Semua room sedang dipakai",
+                Data = unusedRooms
+            });
+        }
+
+        return Ok(new ResponseHandler<IEnumerable<UnusedRoomDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = unusedRooms
+        });
+    }
+
+    [HttpGet("used")]
+    /*[Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]*/
+    public IActionResult GetUsedRooms()
+    {
+        var usedRooms = _service.GetUsedRooms();
+
+        if (usedRooms is null || usedRooms.Count() == 0)
+        {
+            return Ok(new ResponseHandler<IEnumerable<UsedRoomDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Tidak ada room yang sedang dipakai",
+                Data = usedRooms
+            });
+        }
+
+        return Ok(new ResponseHandler<IEnumerable<UsedRoomDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = usedRooms
         });
     }
 }

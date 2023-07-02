@@ -1,15 +1,21 @@
 ﻿using API.Contracts;
 using API.DTOs.Room;
 using API.Models;
+using API.Repositories;
+using API.Utilities.Enums;
 
 namespace API.Services;
 
 public class RoomService
 {
     private readonly IRoomRepository _roomRepository;
-    public RoomService(IRoomRepository roomRepository)
+    private readonly IBookingRepository _bookingRepository;
+    private readonly IEmployeeRepository _employeeRepository;
+    public RoomService(IRoomRepository roomRepository, IBookingRepository bookingRepository, IEmployeeRepository employeeRepository)
     {
         _roomRepository = roomRepository;
+        _bookingRepository = bookingRepository;
+        _employeeRepository = employeeRepository;   
     }
 
     public IEnumerable<GetRoomDto>? GetRoom()
@@ -125,5 +131,77 @@ public class RoomService
         }
 
         return 1;
+    }
+    public IEnumerable<UnusedRoomDto> GetUnusedRoom()
+    {
+        var rooms = _roomRepository.GetAll().ToList();
+
+        var usedRooms = from room in _roomRepository.GetAll()
+                        join booking in _bookingRepository.GetAll()
+                        on room.Guid equals booking.RoomGuid
+                        where booking.Status == StatusLevel.OnGoing
+                        select new GetRoomDto
+                        {
+                            Guid = room.Guid,
+                            Name = room.Name,
+                            Floor = room.Floor,
+                            Capacity = room.Capacity,
+                        };
+
+        List<Room> tmpRooms = new List<Room>(rooms);
+
+        foreach (var room in rooms)
+        {
+            foreach (var usedRoom in usedRooms)
+            {
+                if (room.Guid == usedRoom.Guid)
+                {
+                    tmpRooms.Remove(room);
+                    break;
+                }
+            }
+        }
+
+        var unusedRooms = from room in tmpRooms
+                          select new UnusedRoomDto
+                          {
+                              RoomGuid = room.Guid,
+                              RoomName = room.Name,
+                              Floor = room.Floor,
+                              Capacity = room.Capacity
+                          };
+
+        return unusedRooms;
+    }
+
+    public IEnumerable<UsedRoomDto>? GetUsedRooms()
+    {
+        var bookings = _bookingRepository.GetAll();
+
+        if (bookings is null)
+        {
+            return null;
+        }
+        var usedRooms = (from booking in bookings
+                         join employee in _employeeRepository.GetAll()
+                         on booking.EmployeeGuid equals employee.Guid
+                         join room in _roomRepository.GetAll()
+                         on booking.RoomGuid equals room.Guid
+                         where booking.Status == StatusLevel.OnGoing
+                         select new UsedRoomDto
+                         {
+                             BookingGuid = booking.Guid,
+                             RoomName = room.Name,
+                             Status = booking.Status,
+                             Floor = room.Floor,
+                             BookedBy = employee.FirstName + " " + employee.LastName,
+                         });
+
+        if (usedRooms.Count() == 0)
+        {
+            return null;
+        }
+
+        return usedRooms;
     }
 }
