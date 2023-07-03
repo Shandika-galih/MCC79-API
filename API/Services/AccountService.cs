@@ -316,48 +316,6 @@ public class AccountService
         return toDto;
     }*/
 
-    /*public string Login(LoginDto loginDto)
-    {
-        var emailEmployee = _employeeRepository.GetByEmail(loginDto.Email);
-        if (emailEmployee == null)
-        {
-            return "0"; // Account not found
-        }
-
-        var password = _accountRepository.GetByGuid(emailEmployee.Guid);
-        var isValid = Hashing.ValidatePassword(loginDto.Password, password!.Password);
-        if (!isValid)
-        {
-            return "-1"; // Invalid password
-        }
-
-        var roleEmployee = _roleRepository.GetByName("User"); // Mengambil peran 'User' dari repository
-        var roleAdmin = _roleRepository.GetByName("Admin"); // Mengambil peran 'Admin' dari repository
-
-        if (roleEmployee == null || roleAdmin == null)
-        {
-            return "-2"; // Peran tidak ditemukan
-        }
-
-        var claims = new List<Claim>
-    {
-        new Claim("NIK", emailEmployee.Nik),
-        new Claim("FullName", $"{emailEmployee.FirstName} {emailEmployee.LastName}"),
-        new Claim("Email", loginDto.Email),
-        new Claim(ClaimTypes.Role, roleEmployee.Name), // Menambahkan peran 'User' ke dalam claims
-        new Claim(ClaimTypes.Role, roleAdmin.Name), // Menambahkan peran 'Admin' ke dalam claims
-    };
-
-        try
-        {
-            var token = _tokenHandler.GenerateToken(claims);
-            return token;
-        }
-        catch
-        {
-            return "-3"; // Error generating token
-        }
-    }*/
     public string Login(LoginDto loginDto)
     {
         var employee = _employeeRepository.GetByEmail(loginDto.Email);
@@ -502,6 +460,7 @@ public class AccountService
           return "-2";
       }
   }*/
+
 public IEnumerable<GetAllMasterDto>? GetMaster()
     {
 
