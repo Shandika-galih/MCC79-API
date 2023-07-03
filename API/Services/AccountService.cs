@@ -1,4 +1,5 @@
 ﻿using API.Contracts;
+using API.Data;
 using API.DTOs.Account;
 using API.DTOs.Education;
 using API.DTOs.Employee;
@@ -6,6 +7,7 @@ using API.DTOs.Universities;
 using API.Models;
 using API.Repositories;
 using API.Utilities.Enums;
+using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -14,6 +16,7 @@ namespace API.Services;
 
 public class AccountService
 {
+    private readonly BookingDbContext _context;
     private readonly IAccountRepository _accountRepository;
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IUniversityRepository _universityRepository;
@@ -28,7 +31,8 @@ public class AccountService
              IEducationRepository educationRepository,
              ITokenHandler tokenHandler,
              IRoleRepository roleRepository,
-             IAccountRoleRepository accountRoleRepository)
+             IAccountRoleRepository accountRoleRepository,
+             BookingDbContext context)
     {
         _accountRepository = accountRepository;
         _employeeRepository = employeeRepository;
@@ -37,6 +41,7 @@ public class AccountService
         _tokenHandler = tokenHandler;
         _roleRepository = roleRepository;
         _accountRoleRepository = accountRoleRepository;
+        _context = context;
     }
 
     public IEnumerable<GetAccountDto>? GetAccount()
@@ -160,7 +165,7 @@ public class AccountService
         return 1;
     }
 
-    public RegisterAccount? Register(RegisterAccount registerDto)
+    /*public RegisterAccount? Register(RegisterAccount registerDto)
     {
         // Step 1: Create the employee
 
@@ -309,9 +314,9 @@ public class AccountService
         };
 
         return toDto;
-    }
+    }*/
 
-    public string Login(LoginDto loginDto)
+    /*public string Login(LoginDto loginDto)
     {
         var emailEmployee = _employeeRepository.GetByEmail(loginDto.Email);
         if (emailEmployee == null)
@@ -352,7 +357,52 @@ public class AccountService
         {
             return "-3"; // Error generating token
         }
+    }*/
+    public string Login(LoginDto loginDto)
+    {
+        var employee = _employeeRepository.GetByEmail(loginDto.Email);
+        if (employee is null)
+        {
+            return "0";
+        }
+
+        var account = _accountRepository.GetByGuid(employee.Guid);
+        if (account is null)
+        {
+            return "0";
+        }
+
+        if (!Hashing.ValidatePassword(loginDto.Password, account.Password))
+        {
+            return "-1";
+        }
+
+        var accountRole = _accountRoleRepository.GetByGuidEmployee(account.Guid);
+        var getRoleNameByAccountRole = from ar in accountRole
+                                       join r in _roleRepository.GetAll() on ar.RoleGuid equals r.Guid
+                                       select r.Name;
+
+
+        var claims = new List<Claim>() {
+                new Claim("NIK", employee.Nik),
+                new Claim("FullName", $"{employee.FirstName} {employee.LastName}"),
+                new Claim("Email", loginDto.Email)
+            };
+
+        claims.AddRange(getRoleNameByAccountRole.Select(role => new Claim(ClaimTypes.Role, role)));
+
+        try
+        {
+            var getToken = _tokenHandler.GenerateToken(claims);
+            return getToken;
+        }
+        catch
+        {
+            return "-2";
+        }
     }
+
+
     public string GetRoleFromToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -554,5 +604,113 @@ public IEnumerable<GetAllMasterDto>? GetMaster()
         }
 
         return 3;
+    }
+
+    public RegisterAccount Register(RegisterAccount registerDto)
+    {
+        using var transaction = _context.Database.BeginTransaction();
+        try
+        {
+
+            var role = _roleRepository.GetByName("User");
+
+            EmployeeService employeeService = new EmployeeService(_employeeRepository);
+            string nik = employeeService.GenerateNik();
+
+            if (role is null)
+            {
+                return null;
+            }
+
+            var employee = new Employee
+            {
+                Guid = new Guid(),
+                PhoneNumber = registerDto.PhoneNumber,
+                FirstName = registerDto.FirstName,
+                LastName = registerDto.LastName ?? "",
+                Gender = registerDto.Gender,
+                HiringDate = registerDto.HiringDate,
+                Email = registerDto.Email,
+                Birtdate = registerDto.BirthDate,
+                Nik = nik,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            };
+            var createdEmployee = _employeeRepository.Create(employee);
+
+            var account = new Account
+            {
+                Guid = createdEmployee.Guid,
+                IsDeleted = false,
+                IsUsed = true,
+                Otp = 0,
+                ExpiredDate = DateTime.Now,
+                Password = Hashing.HashPassword(registerDto.Password),
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now,
+            };
+
+            var createdAccount = _accountRepository.Create(account);
+
+            var universityEntity = _universityRepository.CreateWithDuplicateCheck(registerDto.UniversityCode, registerDto.UniversityName);
+
+            if (universityEntity == null)
+            {
+                var university = new University
+                {
+                    Guid = new Guid(),
+                    Code = registerDto.UniversityCode,
+                    Name = registerDto.UniversityName,
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                };
+                universityEntity = _universityRepository.Create(university);
+            }
+
+            var education = new Education
+            {
+                Guid = createdEmployee.Guid,
+                Major = registerDto.Major,
+                Degree = registerDto.Degree,
+                Gpa = registerDto.Gpa,
+                UniversityGuid = universityEntity.Guid,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now,
+            };
+            var createdEducation = _educationRepository.Create(education);
+
+            var accountRole = new AccountRole
+            {
+                Guid = new Guid(),
+                AccountGuid = createdAccount.Guid,
+                RoleGuid = role.Guid
+            };
+            var createdAccountRole = _accountRoleRepository.Create(accountRole);
+
+            var toDto = new RegisterAccount
+            {
+                FirstName = createdEmployee.FirstName,
+                LastName = createdEmployee.LastName,
+                BirthDate = createdEmployee.BirthDate,
+                Gender = createdEmployee.Gender,
+                HiringDate = createdEmployee.HiringDate,
+                Email = createdEmployee.Email,
+                PhoneNumber = createdEmployee.PhoneNumber,
+                Major = createdEducation.Major,
+                Degree = createdEducation.Degree,
+                Gpa = createdEducation.Gpa,
+                UniversityCode = universityEntity.Code,
+                UniversityName = universityEntity.Name,
+                Password = createdAccount.Password
+            };
+            transaction.Commit();
+            return toDto;
+        }
+        catch
+        {
+            transaction.Rollback();
+            return null;
+        }
+
     }
 }

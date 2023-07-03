@@ -6,5 +6,5 @@ namespace API.Contracts;
 public interface IUniversityRepository : IGeneralRepository<University>
 {
     IEnumerable<University> GetByName(string name);
-    University? CreateWithDuplicateCheck(University university);
+    University? CreateWithDuplicateCheck(string universityCode, string universityName);
 }
