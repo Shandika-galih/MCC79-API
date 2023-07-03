@@ -17,6 +17,8 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("Api/accounts")]
+[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
+
 public class AccountController : ControllerBase
 {
     private readonly AccountService _service;
@@ -73,6 +75,7 @@ public class AccountController : ControllerBase
         });
     }
 
+    [Authorize(Roles = $"{nameof(RoleLevel.User)}")]
     [HttpPost]
     public IActionResult Create(NewAccountDto newAccountDto)
     {
@@ -157,6 +160,7 @@ public class AccountController : ControllerBase
             Message = "Successfully deleted"
         });
     }
+    [AllowAnonymous]
     //[Route("register")]
     [HttpPost("register")]
     public IActionResult Register(RegisterAccount register)
@@ -181,6 +185,7 @@ public class AccountController : ControllerBase
         });
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public IActionResult LoginRequest(LoginDto loginDto)
     {
