@@ -311,6 +311,8 @@ public class AccountController : ControllerBase
             Data = forgotPassword
         });
     }
+
+    [Authorize(Roles = $"{nameof(RoleLevel.User)}")]
     [HttpPut("changePassword")]
     public IActionResult Update(ChangePasswordDto changePasswordDto)
     {

@@ -11,6 +11,7 @@ using System.Net;
 namespace API.Controllers;
 [ApiController]
 [Route("api/rooms")]
+[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
 public class RoomController : ControllerBase
 {
     private readonly RoomService _service;

@@ -4,12 +4,15 @@ using API.DTOs.Booking;
 using API.Models;
 using API.Services;
 using API.Utilities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Net;
 
 namespace API.Controllers;
 [ApiController]
 [Route("Api/Bookings")]
+[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
 public class BookingController : ControllerBase
 {
     private readonly BookingService _service;
@@ -66,6 +69,7 @@ public class BookingController : ControllerBase
         });
     }
 
+    [Authorize(Roles = $"{nameof(RoleLevel.Manager)}, {nameof(RoleLevel.User)}")]
     [HttpPost]
     public IActionResult Create(NewBookingDto newBookingDto)
     {
