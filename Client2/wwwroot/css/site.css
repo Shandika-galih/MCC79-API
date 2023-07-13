@@ -1,0 +1,46 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.dataTables_filter, dataTables_length {
+    padding-bottom: 15px;
+}
+/* Gaya tombol ColVis */
+.buttons-colvis {
+    position: relative; /* Untuk membuat posisi relatif */
+}
+
+    /* Gaya dropdown menu */
+    .buttons-colvis .dt-button-collection {
+        opacity: 0; /* Setel opasitas awal ke 0 */
+        position: absolute;
+        top: 100%; /* Mengatur posisi menu dropdown ke bawah */
+        left: 0;
+        z-index: 9999; /* Mengatur z-index untuk menempatkan menu di atas elemen lain */
+        background-color: blue;
+        padding: 8px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: opacity 0.3s ease; /* Menambahkan transisi opasitas */
+    }
+
+    /* Gaya saat tombol ColVis diklik */
+    .buttons-colvis.active .dt-button-collection {
+        opacity: 1; /* Setel opasitas menjadi 1 saat tombol diklik */
+    }
+

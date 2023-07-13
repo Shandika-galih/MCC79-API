@@ -11,7 +11,6 @@ using System.Net;
 namespace API.Controllers;
 [ApiController]
 [Route("Api/AccountRole/roles")]
-[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
 public class AccountRoleController : ControllerBase
 {
     private readonly AccountRoleService _service;

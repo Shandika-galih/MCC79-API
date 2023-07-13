@@ -56,7 +56,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Jwt Configuration
+/*// Jwt Configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
        .AddJwtBearer(options =>
        {
@@ -72,10 +72,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                ValidateLifetime = true,
                ClockSkew = TimeSpan.Zero
            };
-       });
+       });*/
 
 
-// CORS Configuration
+/*// CORS Configuration
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -85,7 +85,15 @@ builder.Services.AddCors(options =>
         policy.AllowAnyMethod();
     });
 });
+*/
 
+app.UseCors(builder =>
+{
+    builder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

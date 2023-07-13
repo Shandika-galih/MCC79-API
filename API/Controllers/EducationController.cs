@@ -12,7 +12,6 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("Api/Educations")]
-[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
 public class EducationController : ControllerBase
 {
     private readonly EducationService _service;

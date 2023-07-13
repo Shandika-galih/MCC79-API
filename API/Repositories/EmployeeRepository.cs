@@ -31,6 +31,7 @@ public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeReposito
     }
     public string? GetLastEmpoyeeNik()
     {
-        return _context.Set<Employee>().ToList().Select(e => e.Nik).LastOrDefault();
+        var lastEmployee = GetAll().OrderByDescending(e => e.Nik).FirstOrDefault();
+        return lastEmployee?.Nik;
     }
 }

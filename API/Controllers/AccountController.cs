@@ -17,7 +17,6 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("Api/accounts")]
-[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
 
 public class AccountController : ControllerBase
 {
@@ -75,7 +74,6 @@ public class AccountController : ControllerBase
         });
     }
 
-    [Authorize(Roles = $"{nameof(RoleLevel.User)}")]
     [HttpPost]
     public IActionResult Create(NewAccountDto newAccountDto)
     {
@@ -160,7 +158,6 @@ public class AccountController : ControllerBase
             Message = "Successfully deleted"
         });
     }
-    [AllowAnonymous]
     //[Route("register")]
     [HttpPost("register")]
     public IActionResult Register(RegisterAccount register)
@@ -185,7 +182,6 @@ public class AccountController : ControllerBase
         });
     }
 
-    [AllowAnonymous]
     [HttpPost("login")]
     public IActionResult LoginRequest(LoginDto loginDto)
     {
@@ -288,7 +284,6 @@ public class AccountController : ControllerBase
         });
     }
 
-    [AllowAnonymous]
     [HttpPost("forgot-password")]
     public IActionResult ForgotPassword(string email)
     {
@@ -312,7 +307,6 @@ public class AccountController : ControllerBase
         });
     }
 
-    [Authorize(Roles = $"{nameof(RoleLevel.User)}")]
     [HttpPut("changePassword")]
     public IActionResult Update(ChangePasswordDto changePasswordDto)
     {

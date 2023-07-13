@@ -1,0 +1,140 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h1>Latihan</h1>
+<div id="myAlert"></div>
+@* <button type="button" class="btn btn-success" id="coba">Coba</button> *@
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalS">Create</button>
+<table id="myTable" class="table table-striped shadow-lg ">
+    <thead>
+        <tr class="table-dark">
+            <th>No</th>
+            <th>NIK</th>
+            <th>Name</th>
+            <th>Birth Date</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>No Telephone</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody class="text-capitalize" id="tbodySW"></tbody>
+</table>
+
+
+<div id="modalS" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-capitalize ">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="myForm">
+                    <input type="hidden" class="form-control" id="nik" value="">
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" aria-describedby="First Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" aria-describedby="Last Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="birtdate" class="form-label">BirtDate</label>
+                        <input type="date" class="form-control" id="birtdate" aria-describedby="BirtDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="hiringDate" class="form-label">HiringDate</label>
+                        <input type="date" class="form-control" id="hiringDate" aria-describedby="hiringDate">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="0">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Perempuan
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="1" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                            Laki-Laki
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phoneNumber" aria-describedby="Phone Number">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="editModal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-capitalize ">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="myFormUpdate">
+                    <input type="hidden" class="form-control" id="enik" value="">
+                    <input type="hidden" class="form-control" id="eguid" value="">
+                    <div class="mb-3">
+                        <label for="efirstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="efirstName" aria-describedby="First Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="elastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="elastName" aria-describedby="Last Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="ebirtdate" class="form-label">BirtDate</label>
+                        <input type="date" class="form-control" id="ebirtdate" aria-describedby="BirtDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="ehiringDate" class="form-label">HiringDate</label>
+                        <input type="date" class="form-control" id="ehiringDate" aria-describedby="hiringDate">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="eflexRadioDefault" id="eflexRadioDefault1" value="0">
+                        <label class="form-check-label" for="eflexRadioDefault1">
+                            Perempuan
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="eflexRadioDefault" id="eflexRadioDefault2" value="1" checked>
+                        <label class="form-check-label" for="eflexRadioDefault2">
+                            Laki-Laki
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ephoneNumber" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="ephoneNumber" aria-describedby="Phone Number">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="eemail" aria-describedby="emailHelp">
+                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="esubmit">Submit</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

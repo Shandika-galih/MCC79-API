@@ -9,7 +9,7 @@ public class RegisterAccount
     public string FirstName { get; set; }
     public string? LastName { get; set; }
     [Required]
-    public DateTime BirthDate { get; set; }
+    public DateTime Birtdate { get; set; }
     [Required]
     [Range(0, 1)]
     public GenderEnum Gender { get; set; }

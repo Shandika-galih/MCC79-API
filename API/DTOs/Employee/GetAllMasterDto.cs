@@ -7,7 +7,7 @@ public class GetAllMasterDto
     public Guid Guid { get; set; }
     public string Nik { get; set; }
     public string FullName { get; set; }
-    public DateTime BirthDate { get; set; }
+    public DateTime Birtdate { get; set; }
     public GenderEnum Gender { get; set; }
     public DateTime HiringDate { get; set; }
     public string Email { get; set; }

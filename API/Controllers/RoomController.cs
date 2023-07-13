@@ -11,7 +11,7 @@ using System.Net;
 namespace API.Controllers;
 [ApiController]
 [Route("api/rooms")]
-[Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
+
 public class RoomController : ControllerBase
 {
     private readonly RoomService _service;
@@ -153,7 +153,6 @@ public class RoomController : ControllerBase
         });
     }
     [HttpGet("unused")]
-    /*[Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]*/
     public IActionResult GetUnusedRooms()
     {
         var unusedRooms = _service.GetUnusedRoom();
@@ -179,7 +178,6 @@ public class RoomController : ControllerBase
     }
 
     [HttpGet("used")]
-    /*[Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]*/
     public IActionResult GetUsedRooms()
     {
         var usedRooms = _service.GetUsedRooms();
