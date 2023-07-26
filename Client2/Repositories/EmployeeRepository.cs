@@ -1,6 +1,6 @@
 ﻿using API.DTOs.Employee;
-using Client.Contracts;
 using API.Models;
+using Client.Contracts;
 
 namespace Client.Repositories
 {

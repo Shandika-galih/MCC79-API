@@ -7,6 +7,7 @@ using API.Utilities.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using TokenHandler = API.Utilites.Handler.TokenHandler;
 
@@ -54,9 +55,17 @@ builder.Services.AddScoped<RoomService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+// servive Handler
+builder.Services.AddScoped<ITokenHandler, TokenHandler>();
 
-/*// Jwt Configuration
+// add smtpclient
+builder.Services.AddTransient<IEmailHandler, EmailHandler>(_ => new EmailHandler(
+    builder.Configuration["EmailService:SmtpServer"],
+    int.Parse(builder.Configuration["EmailService:SmtpPort"]),
+    builder.Configuration["EmailService:FromEmailAddress"]
+));
+
+// JWT Configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
        .AddJwtBearer(options =>
        {
@@ -72,10 +81,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                ValidateLifetime = true,
                ClockSkew = TimeSpan.Zero
            };
-       });*/
+       });
 
-
-/*// CORS Configuration
+// CORS Configuration
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -85,15 +93,42 @@ builder.Services.AddCors(options =>
         policy.AllowAnyMethod();
     });
 });
-*/
 
-app.UseCors(builder =>
-{
-    builder
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(x => {
+    x.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v.1",
+        Title = "Metrodata Coding Camp",
+        Description = "ASP.NET Core API 6.0"
+    });
+    x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+    x.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
 });
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -102,9 +137,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
 app.UseCors();
 
-app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

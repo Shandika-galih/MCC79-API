@@ -1,8 +1,9 @@
-﻿using Client2.Models;
+﻿using Client.Controllers;
+using Client.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Client2.Controllers
+namespace Client.Controllers
 {
     public class LatihanController : Controller
     {

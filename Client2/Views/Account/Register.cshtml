@@ -1,27 +1,18 @@
-﻿@model API.DTOs.Employee.GetEmployeeDto
+﻿@model API.DTOs.Account.RegisterAccount
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Register";
 }
 
-<h1>Create</h1>
+<h1>Register</h1>
 
-<h4>GetEmployeeDto</h4>
+<h4>RegisterAccount</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form action="/Employee/Create" method="POST">
+        <form asp-action="Register" method="post">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group" hidden>
-                <label asp-for="Guid" class="control-label"></label>
-                <input asp-for="Guid" class="form-control" />
-                <span asp-validation-for="Guid" class="text-danger"></span>
-            </div>
-            <div class="form-group" hidden>
-                <label asp-for="Nik" class="control-label"></label>
-                <input asp-for="Nik"  class="form-control" value="1" />
-                <span asp-validation-for="Nik" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -56,6 +47,41 @@
                 <label asp-for="PhoneNumber" class="control-label"></label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Major" class="control-label"></label>
+                <input asp-for="Major" class="form-control" />
+                <span asp-validation-for="Major" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Degree" class="control-label"></label>
+                <input asp-for="Degree" class="form-control" />
+                <span asp-validation-for="Degree" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gpa" class="control-label"></label>
+                <input asp-for="Gpa" class="form-control" />
+                <span asp-validation-for="Gpa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UniversityCode" class="control-label"></label>
+                <input asp-for="UniversityCode" class="form-control" />
+                <span asp-validation-for="UniversityCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UniversityName" class="control-label"></label>
+                <input asp-for="UniversityName" class="form-control" />
+                <span asp-validation-for="UniversityName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

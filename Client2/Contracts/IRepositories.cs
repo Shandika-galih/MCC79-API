@@ -1,4 +1,5 @@
-﻿using API.Utilities.Enums;
+﻿
+using API.Utilities.Enums;
 
 namespace Client.Contracts
 {

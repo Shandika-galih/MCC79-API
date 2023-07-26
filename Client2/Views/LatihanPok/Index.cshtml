@@ -6,6 +6,7 @@
 <h1>Latihan</h1>
 <div id="myAlert"></div>
 @* <button type="button" class="btn btn-success" id="coba">Coba</button> *@
+<button type="button" class="btn btn-info" onclick="showChart()">Chart</button>
 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalS">Create</button>
 <table id="myTable" class="table table-striped shadow-lg ">
     <thead>
@@ -138,3 +139,35 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Chart -->
+<div class="modal fade" id="modalChart" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chart</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-8 border-1 mx-auto">
+                        <canvas id="genderChart"></canvas>
+                    </div>
+                    <div />
+                    <div class="row mt-2">
+                        <div class="col-8 border-1 mx-auto">
+                            <canvas id="universityChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-8 border-1 mx-auto">
+                            <canvas id="ipkChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>

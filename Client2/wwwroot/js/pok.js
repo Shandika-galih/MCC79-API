@@ -392,5 +392,168 @@ function getAbout() {
 $("#btnradio2").click(function () {
     getAbout();
 });*/
+// Mengambil data employee dari API menggunakan metode GET
+function showChart() {
+    // Mendapatkan data dari API untuk kedua jenis chart
+    $.ajax({
+        url: "https://localhost:7186/Api/accounts/getall-master", // Sesuaikan URL sesuai dengan endpoint API Anda
+        type: "GET",
+        dataType: "json"
+    }).done(res => {
+        // Menghitung jumlah jenis kelamin
+        let femaleCount = 0;
+        let maleCount = 0;
+        for (let i = 0; i < res.data.length; i++) {
+            if (res.data[i].gender === 0) {
+                femaleCount++;
+            } else if (res.data[i].gender === 1) {
+                maleCount++;
+            }
+        }
+
+        // Menghitung total data
+        let totalCount = femaleCount + maleCount;
+
+        // Menghitung persentase jenis kelamin
+        let femalePercentage = (femaleCount / totalCount) * 100;
+        let malePercentage = (maleCount / totalCount) * 100;
+
+        // Menghitung rata-rata IPK dalam rentang tertentu
+        let ipkRangeCounts = {
+            '0-1': 0,
+            '1-2': 0,
+            '2-3': 0,
+            '3-3.5': 0,
+            '3.6-4': 0
+        };
+        for (let i = 0; i < res.data.length; i++) {
+            let ipk = res.data[i].gpa;
+            if (ipk >= 0 && ipk < 1) {
+                ipkRangeCounts['0-1']++;
+            } else if (ipk >= 1 && ipk < 2) {
+                ipkRangeCounts['1-2']++;
+            } else if (ipk >= 2 && ipk < 3) {
+                ipkRangeCounts['2-3']++;
+            } else if (ipk >= 3 && ipk < 3.5) {
+                ipkRangeCounts['3-3.5']++;
+            } else if (ipk >= 3.6 && ipk <= 4) {
+                ipkRangeCounts['3.6-4']++;
+            }
+        }
+        // Membuat grafik IPK menggunakan Chart.js
+        let ipkCtx = document.getElementById('ipkChart').getContext('2d');
+        let ipkChart = new Chart(ipkCtx, {
+            type: 'bar',
+            data: {
+                labels: ['0-1', '1-2', '2-3', '3-3.5', '3.6-4'],
+                datasets: [{
+                    label: 'IPK Range',
+                    data: Object.values(ipkRangeCounts),
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8d6e63', '#66bb6a'],
+                    hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8d6e63', '#66bb6a']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        stepSize: 1,
+                        precision: 0
+                    }
+                }
+            }
+        });
 
 
+        // Membuat grafik jenis kelamin menggunakan Chart.js
+        let genderCtx = document.getElementById('genderChart').getContext('2d');
+        let genderChart = new Chart(genderCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Female', 'Male'],
+                datasets: [{
+                    data: [femalePercentage, malePercentage],
+                    backgroundColor: ['#FF6384', '#36A2EB'],
+                    hoverBackgroundColor: ['#FF6384', '#36A2EB']
+                }]
+            },
+            options: {
+                responsive: true,
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            let label = data.labels[tooltipItem.index];
+                            let value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                            return label + ': ' + value.toFixed(2) + '% (' + Math.round(value * totalCount / 100) + ')';
+                        }
+                    }
+                }
+            }
+        });
+
+        // Menghitung jumlah universitas
+        let universities = {};
+        for (let i = 0; i < res.data.length; i++) {
+            const universityName = res.data[i].universityName;
+            if (universityName in universities) {
+                universities[universityName]++;
+            } else {
+                universities[universityName] = 1;
+            }
+        }
+
+        // Mengumpulkan data untuk grafik universitas
+        const universityNames = Object.keys(universities);
+        const universityCounts = Object.values(universities);
+
+        // Membuat grafik universitas menggunakan Chart.js
+        let universityCtx = document.getElementById('universityChart').getContext('2d');
+        let universityChart = new Chart(universityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: universityNames,
+                datasets: [{
+                    data: universityCounts,
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8d6e63', '#66bb6a', '#ba68c8'],
+                    hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8d6e63', '#66bb6a', '#ba68c8']
+                }]
+            },
+            options: {
+                responsive: true,
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            let label = data.labels[tooltipItem.index];
+                            let value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                            return label + ': ' + value;
+                        }
+                    }
+                }
+            }
+        });
+
+        // Membuka modal setelah grafik selesai dibuat
+        $('#modalChart').modal('show');
+
+        $('#modalChart').on('hidden.bs.modal', function () {
+            // Reset chart
+            let genderChart = Chart.getChart('genderChart');
+            let universityChart = Chart.getChart('universityChart');
+            let ipkChart = Chart.getChart('ipkChart');
+            if (genderChart) {
+                genderChart.destroy();
+            }
+            if (universityChart) {
+                universityChart.destroy();
+            }
+            if (ipkChart) {
+                ipkChart.destroy();
+            }
+        });
+      
+
+    }).fail(error => {
+        alert("Failed to fetch data from API.");
+    });
+}

@@ -1,9 +1,10 @@
-﻿using Client2.Models;
+﻿using Client.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Client2.Controllers
-{
+namespace Client.Controllers
+{ 
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -13,9 +14,31 @@ namespace Client2.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("/Unauthorized")]
+        public IActionResult Unauthorized()
+        {
+            return View("401");
+        }
+
+        [AllowAnonymous]
+        [Route("/NotFound")]
+        public IActionResult Notfound()
+        {
+            return View("404");
+        }
+
+        [AllowAnonymous]
+        [Route("/Forbidden")]
+        public IActionResult Forbidden()
+        {
+            return View("403");
         }
 
         public IActionResult Privacy()

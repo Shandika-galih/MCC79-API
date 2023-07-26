@@ -182,7 +182,7 @@ public class AccountService
             Nik = nik,
             FirstName = registerDto.FirstName,
             LastName = registerDto.LastName,
-            Birtdate = registerDto.BirthDate,
+            Birtdate = registerDto.Birtdate,
             Gender = registerDto.Gender,
             HiringDate = registerDto.HiringDate,
             Email = registerDto.Email,
@@ -300,7 +300,7 @@ public class AccountService
         {
             FirstName = createdEmployee.FirstName,
             LastName = createdEmployee.LastName,
-            BirthDate = createdEmployee.BirthDate,
+            Birtdate = createdEmployee.Birtdate,
             Gender = createdEmployee.Gender,
             HiringDate = createdEmployee.HiringDate,
             Email = createdEmployee.Email,
